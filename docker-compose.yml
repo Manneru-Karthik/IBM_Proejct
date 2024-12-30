@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: eventsphere-backend
+    ports:
+      - "5000:5000"
+    env_file: 
+      - .env
+    networks:
+      - eventsphere_network
+
+  frontend:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    container_name: eventsphere-frontend
+    ports:
+      - "3000:3000" # Expose React development server port 3000 to host
+    env_file: 
+      - .env
+    depends_on:
+      - backend
+    networks:
+      - eventsphere_network
+
+networks:
+  eventsphere_network:
+    driver: bridge
