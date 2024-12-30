@@ -47,22 +47,24 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    bat 'docker build -t icr.io/cloud-namespaceroomanproject/eventsphere-backend ./server'
-                    bat 'docker build -t icr.io/cloud-namespaceroomanproject/eventsphere-frontend ./user'
+                    bat 'docker build -t eventsphere-backend ./server'
+                    bat 'docker build -t eventsphere-frontend ./user'
                 }
             }
         }
-        stage('Publish Docker Images to IBM Cloud Registry') {
+        stage('Publish Docker Images to Registry') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'ibmcloud-credentials', usernameVariable: 'IBM_USERNAME', passwordVariable: 'IBM_PASSWORD')]) {
-                        bat 'ibmcloud login -u %IBM_USERNAME% -p %IBM_PASSWORD%'
-                        bat 'ibmcloud cr login'
-                        bat 'docker push icr.io/cloud-namespaceroomanproject/eventsphere-backend:latest'
-                        bat 'docker push icr.io/cloud-namespaceroomanproject/eventsphere-frontend:latest'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
+                        bat 'docker tag eventsphere-backend %DOCKER_USERNAME%/eventsphere-backend:latest'
+                        bat 'docker push %DOCKER_USERNAME%/eventsphere-backend:latest'
+                        bat 'docker tag eventsphere-frontend %DOCKER_USERNAME%/eventsphere-frontend:latest'
+                        bat 'docker push %DOCKER_USERNAME%/eventsphere-frontend:latest'
                     }
                 }
             }
         }
+        
     }
 }
