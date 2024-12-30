@@ -47,8 +47,8 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    bat 'docker build -t icr.io/your-namespace/eventsphere-backend ./server'
-                    bat 'docker build -t icr.io/your-namespace/eventsphere-frontend ./user'
+                    bat 'docker build -t icr.io/cloud-namespaceroomanproject/eventsphere-backend ./server'
+                    bat 'docker build -t icr.io/cloud-namespaceroomanproject/eventsphere-frontend ./user'
                 }
             }
         }
@@ -58,8 +58,8 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'ibmcloud-credentials', usernameVariable: 'IBM_USERNAME', passwordVariable: 'IBM_PASSWORD')]) {
                         bat 'ibmcloud login -u %IBM_USERNAME% -p %IBM_PASSWORD%'
                         bat 'ibmcloud cr login'
-                        bat 'docker push icr.io/your-namespace/eventsphere-backend:latest'
-                        bat 'docker push icr.io/your-namespace/eventsphere-frontend:latest'
+                        bat 'docker push icr.io/cloud-namespaceroomanproject/eventsphere-backend:latest'
+                        bat 'docker push icr.io/cloud-namespaceroomanproject/eventsphere-frontend:latest'
                     }
                 }
             }
